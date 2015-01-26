@@ -4,7 +4,13 @@ author: "By Johnson Nei and Reed Sawyers"
 date: "January 25, 2015"
 output: html_document
 ---
-
+```{r, echo = FALSE, warning=FALSE}
+library(ws.data)
+  library(lubridate)
+  library(dplyr)
+  library(ggplot2)
+  library(tidyr)
+```
 Johnson Nei(Johnson.Nei@williams.edu) and Reed Sawyers (jrs9@williams.edu) are currently students at Williams college and produced this replication as part of the winter study class, Econ 20: Quantitative Equity Analysis. We would like to thank the Professor David Kane and the teaching fellow Yuanchu Dang. The code used to replicate the results in the paper was written in R and is available from the authors. Contact David Kane at dave@kanecap.com? for access to the data.
 
 Abstract
@@ -26,11 +32,44 @@ Our portfolios are self-financing meaning that the return from the portfolios is
 
 This table is a partial replication of the table produced by MG on page 1254 of the Journal of Finance in which their paper was published. In this table we report the top two industries by average market cap, reporting the industry, average number of stocks in the industry, average fraction of the market cap of the industry, and average monthly returns of the industry.
 3 Results
-Our four basic portfolios were (1,1) individual stocks, (1,1) industries, (6,6) individual stocks, and (6,6) industries. These portfolios had mean monthly returns of .15%, 1.18%, .87% and 1.90% respectively. These results are as expected. The industry momentum portfolios perform better than the individual stock portfolios in both time frames, while providing the highest returns at the 6 month time frame. For individual stocks the 1 month time frame is effectively 0, while the 6 month time frame does provide positive returns. 
-
 ```{r, echo = FALSE}
 load("~/Final_project2/data/t1.RData")
 t1
+```
+Our four basic portfolios were (1,1) individual stocks, (1,1) industries, (6,6) individual stocks, and (6,6) industries. These portfolios had mean monthly returns of .15%, 1.18%, .87% and 1.90% respectively. These results are as expected. The industry momentum portfolios perform better than the individual stock portfolios in both time frames, while providing the highest returns at the 6 month time frame. For individual stocks the 1 month time frame is effectively 0, while the 6 month time frame does provide positive returns. 
+```{r, echo = FALSE}
+load("~/Final_project2/data/t2.RData")
+t2
+```
+For our extension we created 4 buckets, highly priced industries, highly priced stocks, low priced industries and low priced stocks and then ran the 6,6 and 1,1 tests on them. As would be expected, the 6,6 portfolio performed better than the 1,1 for each bucket, and the industry groupings did better than the stock groupings. For the 1,1 groupings the higher priced industries out performed the lower priced industries, but the low priced stocks outperformed the high priced stocks. In addition, at the 6,6 level low price stocks and low price industries out performed their high price equivelents. We believe that the low price buckets outperforming, and often dramatically so, the higher price buckets is not due to actual operations in the market, but rather bias in ourr data-set and expirimental design. 
+Two factors contribute to these results, using all 3083 stocks from the origional data set, and creating pricing buckets based on the first recorded price of an asset. By using all 3083 stocks we introduce an element of survivorship bias. For example there might have been 100 identicle stocks in 1998 of which 80 went bankrupt, 19 performed normally and 1 performed so well it made it to the top 1500 of stocks by market cap. Only that 1 that performed extraordinarily would be included in our data. Secondly, we determine the "price" of a stock by the first recorded price of that equity, generally January 2, 1998. These two factors come together to give the illusion of fantastic returns for origionally low priced stocks.
+For example if one knows a stock is eventually going to make it into the top 1500, as is a given by our data set, than the lower it's price in 1998, the more it will have to grow to eventually make it in, giving the appearance of abornally high returns. 
 
+The following data table sumarized the results of our price based extension.
+``````{r, echo = FALSE}
+load("~/Final_project2/data/t3.RData")
+t3
+```
+The following graphs show the cumulative returns over our aprox 120 month period of our Industry (1,1) portfolio, our industry (6,6) portfolio, our stock (1,1) portfolio, and our stock (6,6) portfoli. 
+```{r, echo = FALSE}
+load("~/Final_project2/data/cum_ret_df_i1.RData")
+cum_ret_df_i1 %>%
+ggplot(aes(Date, cum_ret)) + geom_point()
+```
+```{r, echo = FALSE}
+load("~/Final_project2/data/cum_ret_df_i6.RData")
+cum_ret_df_i6 %>%
+ggplot(aes(Date, cum_ret)) + geom_point()
+``````{r, echo = FALSE}
+load("~/Final_project2/data/cum_ret_df_s1.RData")
+cum_ret_df_s1 %>%
+ggplot(aes(Date, cum_ret)) + geom_point()
+``````{r, echo = FALSE}
+load("~/Final_project2/data/cum_ret_df_s6.RData")
+cum_ret_df_s6 %>%
+ggplot(aes(Date, cum_ret)) + geom_point()
 ```
 
+Conclusion
+In the past researchers have identified a link between the past performance of stocks and their future performance in the short and intermediate terms, deemed the "momentum effect". Moskowitz and Grinblatt extended that analysis by identifying a momentum effect for industries as a whole and concluded that the industries momentum accounted for a large proportion of the profits realized by individual stock momentum. We analysed 3083 large cap stocks from 1998 to 2007 that during at least one year were in the top 1500 stocks by market cap. We initially created four portfolios by taking the top 30% by mean return for the past month, and then for the past six months, for both stocks and industries. We would then hold those portfolios for one and six months respectively and created new portfolios each month. In both the (1,1)  and (6,6) time frames the industry momentum strategy returned substantialy more, with the (1,1) individual stock's returns at almost 0. We concluded that the momentum effect is a stronger explanation than individual stock momentum, and that both strategies perform better using the (6,6) time frame.
+As an extension to MG's paper we decided to study the effect of equity price as well as momentum. To do this we separated stocks and industries into high and low price buckets (30%) based on each stocks first recorded price. We than ran each bucket, Stock/High, Stock/Low, Ind/High, Ind/Low through the (1,1) and (6,6) strategies. For every bucket the (6,6) time frame provided higher returns, and industries always out performed stocks in the same price level. Interestingly the low priced bucket actully out performed the high price buckets for (1,1) stocks and both (6,6) industries and stocks. We hypothesize that this is due to survivorship bias introduced by our methods and data set that must be corrected for in future studies. In summary, Industry and (6,6)  always produce higher returns in our study but their is insuficient evidence to pronounce final jugement on the effect of price in our model.
